@@ -16,6 +16,8 @@ ENV PAGE_REFRESH=0
 ENV INDEX_IMAGES_PER_ROW=1
 ENV INDEX_IMAGE_OUTPUT=hs
 ENV RUN_VNSTATD=1
+ENV PUID=101
+ENV PGID=102
 
 COPY favicon.ico /var/www/localhost/htdocs/favicon.ico
 COPY start.sh /
@@ -61,8 +63,8 @@ COPY --from=builder vnstat-*/examples/vnstat-metrics.cgi /var/www/localhost/htdo
 
 RUN true \
     && set -ex \
-    && addgroup -S vnstat \
-    && adduser -S -h /var/lib/vnstat -s /sbin/nologin -g vnStat -D -H -G vnstat vnstat
+    && addgroup -S -g $PGID vnstat \
+    && adduser -S -u $PUID -h /var/lib/vnstat -s /sbin/nologin -g vnStat -D -H -G vnstat vnstat
 
 VOLUME /var/lib/vnstat
 EXPOSE ${HTTP_PORT}
